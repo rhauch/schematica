@@ -7,7 +7,7 @@ the document.
 
 The primary features of Schematica include:
 
-* use the standard [JSON-P API (JSR-353)][jsr-353] to create, change, (de)serialize, and read JSON documents
+* use the standard [JSON-P API (JSR-353)][jsr353] to create, change, (de)serialize, and read JSON documents
 * compare documents
 * merge changes from one document into another
 * find documents with filters that use the underlying relational database's query capabilities
@@ -19,4 +19,4 @@ The primary features of Schematica include:
 
 
 
-[jsr353]: https://jcp.org/en/jsr/detail?id=353
+   [jsr353]: https://jcp.org/en/jsr/detail?id=353
