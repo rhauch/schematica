@@ -62,9 +62,13 @@ public class Schematica {
         return PROVIDER.getStore(properties);
     }
 
-    public static Document document( String key,
+    public static DocumentEditor document( String key,
                                      JsonObject json ) {
         return PROVIDER.document(key, json);
+    }
+
+    public static DocumentEditor document( String key ) {
+        return PROVIDER.document(key);
     }
 
     public static PathBuilder pathBuilder() {

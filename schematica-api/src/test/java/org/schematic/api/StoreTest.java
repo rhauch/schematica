@@ -18,6 +18,7 @@ package org.schematic.api;
 
 import java.util.Map;
 import org.schematica.api.Document;
+import org.schematica.api.Schematica;
 import org.schematica.api.Store;
 import org.schematica.api.tasks.Filters;
 import org.schematica.api.tasks.Mappers;
@@ -60,5 +61,11 @@ public class StoreTest {
     public void getMaximumLongValueInAllDocumentsWithFluentAPI() throws Exception {
         Task<Map<String, Long>> task = store.all().map(Mappers.longValue("age")).reduce(Reducers.Longs.maximum());
         Long maxAge = task.call().get("age");
+    }
+
+    public void insertAndEditDocument() {
+        Document document = Schematica.document("key").setString("name", "test").setInt("age", 23).unwrap();
+        store.write("o1", document);
+        store.read("o1").edit().setString("name", "test2");
     }
 }
