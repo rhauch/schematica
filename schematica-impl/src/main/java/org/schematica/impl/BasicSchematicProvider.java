@@ -22,6 +22,9 @@ import org.schematica.api.Document;
 import org.schematica.api.PathBuilder;
 import org.schematica.api.SchematicaException;
 import org.schematica.api.Store;
+import org.schematica.api.task.FilterBuilder;
+import org.schematica.api.task.MapperBuilder;
+import org.schematica.api.task.ReducerBuilder;
 import org.schematica.spi.SchematicaProvider;
 
 /**
@@ -45,6 +48,21 @@ public class BasicSchematicProvider implements SchematicaProvider {
     @Override
     public final PathBuilder getPathBuilder() {
         return pathBuilder;
+    }
+
+    @Override
+    public FilterBuilder getFilterBuilder() {
+        return null;
+    }
+
+    @Override
+    public MapperBuilder getMapperBuilder() {
+        return null;
+    }
+
+    @Override
+    public ReducerBuilder getReducerBuilder() {
+        return null;
     }
 
     static class BasicDocument implements Document {

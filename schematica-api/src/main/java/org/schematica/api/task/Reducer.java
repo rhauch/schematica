@@ -14,11 +14,26 @@
  * limitations under the License.
  */
 
-package org.schematica.api.tasks;
+package org.schematica.api.task;
 
 import java.util.Iterator;
 
+/**
+ * An interface that defines the "reduce" phase of the MapReduce procedure. The reduce phase is called at least once for each
+ * output key and the set of values for that output key.
+ * 
+ * @param <KeyType> the type of key
+ * @param <ValueType> the type of value
+ * @author Randall Hauch (rhauch@redhat.com)
+ */
 public interface Reducer<KeyType, ValueType> {
+    /**
+     * Reduce the supplied values for the given key into a single value.
+     * 
+     * @param reducedKey the key output by the {@link Mapper#map map phase}
+     * @param values the values output during the {@link Mapper#map map phase}
+     * @return the single reduced value
+     */
     ValueType reduce( KeyType reducedKey,
                       Iterator<ValueType> values );
 }

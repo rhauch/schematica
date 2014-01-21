@@ -22,6 +22,9 @@ import org.schematica.api.Document;
 import org.schematica.api.PathBuilder;
 import org.schematica.api.SchematicaException;
 import org.schematica.api.Store;
+import org.schematica.api.task.FilterBuilder;
+import org.schematica.api.task.MapperBuilder;
+import org.schematica.api.task.ReducerBuilder;
 
 /**
  * @author Randall Hauch (rhauch@redhat.com)
@@ -39,6 +42,12 @@ public interface SchematicaProvider {
 
     Document document( String key,
                        JsonObject json );
+
+    FilterBuilder getFilterBuilder();
+
+    MapperBuilder getMapperBuilder();
+
+    ReducerBuilder getReducerBuilder();
 
     PathBuilder getPathBuilder();
 }

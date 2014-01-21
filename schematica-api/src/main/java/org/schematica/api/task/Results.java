@@ -14,17 +14,28 @@
  * limitations under the License.
  */
 
-package org.schematica.api.tasks;
+package org.schematica.api.task;
 
-import org.schematica.api.Document;
+import org.schematica.api.Store;
 
-public interface Mapper<KeyType, ValueType> {
-    void map( Document document,
-              Collector<KeyType, ValueType> collector );
+/**
+ * The results for a task for processing documents within a {@link Store}.
+ * 
+ * @author Randall Hauch (rhauch@redhat.com)
+ * @param <T> the type of result that should be returned when this task is completed.
+ */
+public interface Results<T> {
 
-    public interface Collector<K, V> {
-        void emit( K key,
-                   V value );
-    }
+    /**
+     * Release all resources that are or have been in-use.
+     */
+    void close();
+
+    /**
+     * Get the output of the task.
+     * 
+     * @return the output
+     */
+    T output();
 
 }

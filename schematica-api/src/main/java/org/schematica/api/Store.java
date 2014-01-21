@@ -18,11 +18,11 @@ package org.schematica.api;
 
 import java.util.Map;
 import javax.json.JsonObject;
-import org.schematica.api.tasks.Filter;
-import org.schematica.api.tasks.Mapper;
-import org.schematica.api.tasks.Reducer;
-import org.schematica.api.tasks.Sequence;
-import org.schematica.api.tasks.Task;
+import org.schematica.api.task.Filter;
+import org.schematica.api.task.Mapper;
+import org.schematica.api.task.Reducer;
+import org.schematica.api.task.Sequence;
+import org.schematica.api.task.Task;
 
 /**
  * @author Randall Hauch (rhauch@redhat.com)

@@ -18,12 +18,13 @@ package org.schematic.api;
 
 import java.util.Map;
 import org.schematica.api.Document;
+import org.schematica.api.Schematica;
 import org.schematica.api.Store;
-import org.schematica.api.tasks.Filters;
-import org.schematica.api.tasks.Mappers;
-import org.schematica.api.tasks.Reducers;
-import org.schematica.api.tasks.Sequence;
-import org.schematica.api.tasks.Task;
+import org.schematica.api.task.FilterBuilder;
+import org.schematica.api.task.MapperBuilder;
+import org.schematica.api.task.ReducerBuilder;
+import org.schematica.api.task.Sequence;
+import org.schematica.api.task.Task;
 
 /**
  * NOT A REAL TEST - JUST HERE TO HELP DEFINE THE API
@@ -31,34 +32,37 @@ import org.schematica.api.tasks.Task;
 public class StoreTest {
 
     private Store store;
+    private FilterBuilder filters = Schematica.filters();
+    private MapperBuilder mappers = Schematica.mappers();
+    private ReducerBuilder reducers = Schematica.reducers();
 
     public void countAllDocumentsWithFluentAPI() throws Exception {
         Task<Long> task = store.all().totalCount();
-        Long count = task.call();
+        Long count = task.call().output();
     }
 
     public void countSomeDocumentsWithFluentAPI() throws Exception {
-        Task<Long> task = store.filter(Filters.passthrough()).totalCount();
-        Long count = task.call();
+        Task<Long> task = store.filter(filters.selectAll()).totalCount();
+        Long count = task.call().output();
     }
 
     public void getAllKeysWithFluentAPI() throws Exception {
         Task<Sequence<String>> task = store.all().keys();
-        Sequence<String> keys = task.call();
+        Sequence<String> keys = task.call().output();
     }
 
     public void getAllDocumentsWithFluentAPI() throws Exception {
         Task<Sequence<Document>> task = store.all().documents();
-        Sequence<Document> docs = task.call();
+        Sequence<Document> docs = task.call().output();
     }
 
     public void getAllDocumentsByKeyWithFluentAPI() throws Exception {
         Task<Map<String, Document>> task = store.all().documentsByKey();
-        Map<String, Document> docs = task.call();
+        Map<String, Document> docs = task.call().output();
     }
 
     public void getMaximumLongValueInAllDocumentsWithFluentAPI() throws Exception {
-        Task<Map<String, Long>> task = store.all().map(Mappers.longValue("age")).reduce(Reducers.Longs.maximum());
-        Long maxAge = task.call().get("age");
+        Task<Map<String, Long>> task = store.all().map(mappers.longValue("age")).reduce(reducers.longs().maximum());
+        Long maxAge = task.call().output().get("age");
     }
 }

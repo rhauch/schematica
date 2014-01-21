@@ -14,28 +14,17 @@
  * limitations under the License.
  */
 
-package org.schematica.api.tasks;
+package org.schematica.api.task;
 
+import java.util.concurrent.Callable;
+import org.schematica.api.Store;
 
 /**
- * A simple ordered collection of objects that contains the size information.
+ * An executable task for processing documents within a {@link Store}.
  * 
  * @author Randall Hauch (rhauch@redhat.com)
- * @param <T> the type
+ * @param <T> the type of result that should be returned when this task is completed.
  */
-public interface Sequence<T> extends Iterable<T> {
-    /**
-     * Return the number of documents that appears in this collection.
-     * 
-     * @return the number of documents; never negative but possibly 0
-     */
-    int size();
+public interface Task<T> extends Callable<Results<T>> {
 
-    /**
-     * Return whether this collection of documents is empty. This is sometimes more efficient than checking if {@code size() == 0}
-     * .
-     * 
-     * @return true if there are no documents, or false otherwise
-     */
-    boolean isEmpty();
 }

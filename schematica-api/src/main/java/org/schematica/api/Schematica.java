@@ -19,6 +19,9 @@ package org.schematica.api;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import javax.json.JsonObject;
+import org.schematica.api.task.FilterBuilder;
+import org.schematica.api.task.MapperBuilder;
+import org.schematica.api.task.ReducerBuilder;
 import org.schematica.spi.SchematicaProvider;
 
 /**
@@ -62,12 +65,24 @@ public class Schematica {
         return PROVIDER.getStore(properties);
     }
 
-    public static Document document( String key,
-                                     JsonObject json ) {
-        return PROVIDER.document(key, json);
+    public static FilterBuilder filters() {
+        return PROVIDER.getFilterBuilder();
+    }
+
+    public static MapperBuilder mappers() {
+        return PROVIDER.getMapperBuilder();
+    }
+
+    public static ReducerBuilder reducers() {
+        return PROVIDER.getReducerBuilder();
     }
 
     public static PathBuilder pathBuilder() {
         return PROVIDER.getPathBuilder();
+    }
+
+    public static Document document( String key,
+                                     JsonObject json ) {
+        return PROVIDER.document(key, json);
     }
 }

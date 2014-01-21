@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-package org.schematica.api.tasks;
+package org.schematica.api.task;
 
-import javax.json.JsonObject;
-import org.schematica.api.Document;
 
 /**
- * A simple component that filters documents.
+ * A simple ordered collection of objects that contains the size information.
  * 
  * @author Randall Hauch (rhauch@redhat.com)
+ * @param <T> the type
  */
-public interface Filter {
+public interface Sequence<T> extends Iterable<T> {
     /**
-     * Determine whether the supplied document (and metadata) are deemed acceptable by this filter.
+     * Return the number of documents that appears in this collection.
      * 
-     * @param document the document; never null
-     * @param metadata the metadata; never null
-     * @return true if the document and metadata pass this filter, or false otherwise
+     * @return the number of documents; never negative but possibly 0
      */
-    boolean satisfies( Document document,
-                       JsonObject metadata );
+    int size();
+
+    /**
+     * Return whether this collection of documents is empty. This is sometimes more efficient than checking if {@code size() == 0}
+     * .
+     * 
+     * @return true if there are no documents, or false otherwise
+     */
+    boolean isEmpty();
 }
