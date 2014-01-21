@@ -18,7 +18,7 @@ package org.schematica.spi;
 
 import java.util.Properties;
 import javax.json.JsonObject;
-import org.schematica.api.Document;
+import org.schematica.api.DocumentEditor;
 import org.schematica.api.PathBuilder;
 import org.schematica.api.SchematicaException;
 import org.schematica.api.Store;
@@ -37,8 +37,10 @@ public interface SchematicaProvider {
      */
     Store getStore( Properties properties ) throws SchematicaException;
 
-    Document document( String key,
-                       JsonObject json );
+    DocumentEditor document( String key,
+                             JsonObject json );
+
+    DocumentEditor document( String key );
 
     PathBuilder getPathBuilder();
 }

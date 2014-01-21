@@ -17,7 +17,6 @@
 package org.schematica.api;
 
 import java.util.Map;
-import javax.json.JsonObject;
 import org.schematica.api.tasks.Filter;
 import org.schematica.api.tasks.Mapper;
 import org.schematica.api.tasks.Reducer;
@@ -31,7 +30,7 @@ public interface Store {
 
     /**
      * Determine whehter the store contains a document with the given key.
-     * 
+     *
      * @param key the key; may not be null
      * @return true if the document contains a document with the key, or false otherwise
      */
@@ -40,13 +39,13 @@ public interface Store {
     Document read( String key );
 
     void write( String key,
-                JsonObject document );
+                Document document );
 
     boolean writeIfAbsent( String key,
-                           JsonObject document );
+                           Document document );
 
     void merge( String key,
-                JsonObject document );
+                Document document );
 
     boolean remove( String key );
 

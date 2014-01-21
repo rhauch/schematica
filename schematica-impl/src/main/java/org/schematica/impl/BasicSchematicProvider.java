@@ -19,6 +19,7 @@ package org.schematica.impl;
 import java.util.Properties;
 import javax.json.JsonObject;
 import org.schematica.api.Document;
+import org.schematica.api.DocumentEditor;
 import org.schematica.api.PathBuilder;
 import org.schematica.api.SchematicaException;
 import org.schematica.api.Store;
@@ -37,55 +38,18 @@ public class BasicSchematicProvider implements SchematicaProvider {
     }
 
     @Override
-    public Document document( String key,
+    public DocumentEditor document( String key,
                               JsonObject json ) {
-        return new BasicDocument(key, json);
+        return new BasicDocumentEditor(key);
+    }
+
+    @Override
+    public DocumentEditor document( String key ) {
+        return new BasicDocumentEditor(key);
     }
 
     @Override
     public final PathBuilder getPathBuilder() {
         return pathBuilder;
     }
-
-    static class BasicDocument implements Document {
-        private final String key;
-        private final JsonObject json;
-
-        BasicDocument( String key,
-                       JsonObject json ) {
-            this.key = key;
-            this.json = json;
-        }
-
-        @Override
-        public JsonObject getJsonObject() {
-            return json;
-        }
-
-        @Override
-        public String getKey() {
-            return key;
-        }
-
-        @Override
-        public int hashCode() {
-            return key.hashCode();
-        }
-
-        @Override
-        public boolean equals( Object obj ) {
-            if (obj == this) return true;
-            if (obj instanceof Document) {
-                Document that = (Document)obj;
-                return this.key.equals(that.getKey());
-            }
-            return false;
-        }
-
-        @Override
-        public String toString() {
-            return key + " -> " + json;
-        }
-    }
-
 }
