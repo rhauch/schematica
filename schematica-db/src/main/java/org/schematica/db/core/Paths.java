@@ -16,12 +16,9 @@
 
 package org.schematica.db.core;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
 import org.schematica.db.Path;
 import org.schematica.db.PathBuilder;
 import org.schematica.db.SchematicaException;
@@ -108,28 +105,6 @@ public class Paths implements PathBuilder {
         return new MultiSegmentPath(segments);
     }
 
-    @Override
-    public JsonValue valueAtPath( JsonObject object,
-                                  Path path ) {
-        JsonStructure obj = object;
-        JsonValue value = null;
-        for (String segment : path) {
-            if (obj instanceof JsonObject) {
-                value = ((JsonObject)obj).get(segment);
-            } else {
-                try {
-                    int index = Integer.parseInt(segment);
-                    value = ((JsonArray)obj).get(index);
-                } catch (NumberFormatException e) {
-                    // the segment is not an index ...
-                    return null;
-                }
-            }
-            if (value == null) break;
-        }
-        return value;
-    }
-
     protected static final class EmptyPath implements Path {
         @Override
         public Iterator<String> iterator() {
@@ -183,6 +158,15 @@ public class Paths implements PathBuilder {
 
         @Override
         public Path parent() {
+            return EMPTY_PATH;
+        }
+
+        @Override
+        public Path ancestorOfSize( int size ) {
+            if (size >= 0) {
+                String msg = Util.createString("The ancestor size '{0}' is larger than this path's size of '{1}'", size, size());
+                throw new IllegalArgumentException(msg);
+            }
             return EMPTY_PATH;
         }
 
@@ -271,6 +255,14 @@ public class Paths implements PathBuilder {
         @Override
         public Path parent() {
             return EMPTY_PATH;
+        }
+
+        @Override
+        public Path ancestorOfSize( int size ) {
+            if (size == 0) return EMPTY_PATH;
+            if (size == 1) return this;
+            String msg = Util.createString("The ancestor size '{0}' is larger than this path's size of '{1}'", size, size());
+            throw new IllegalArgumentException(msg);
         }
 
         @Override
@@ -367,6 +359,15 @@ public class Paths implements PathBuilder {
         public Path parent() {
             if (parent == null) parent = new SinglePath(fieldName1);
             return parent;
+        }
+
+        @Override
+        public Path ancestorOfSize( int size ) {
+            if (size == 0) return EMPTY_PATH;
+            if (size == 1) return parent();
+            if (size == 2) return this;
+            String msg = Util.createString("The ancestor size '{0}' is larger than this path's size of '{1}'", size, size());
+            throw new IllegalArgumentException(msg);
         }
 
         @Override
@@ -471,6 +472,16 @@ public class Paths implements PathBuilder {
                 return new DoublePath(fieldName1, fieldName2);
             }
             return parent;
+        }
+
+        @Override
+        public Path ancestorOfSize( int size ) {
+            if (size == 0) return EMPTY_PATH;
+            if (size == 1) return parent().parent();
+            if (size == 2) return parent();
+            if (size == 3) return this;
+            String msg = Util.createString("The ancestor size '{0}' is larger than this path's size of '{1}'", size, size());
+            throw new IllegalArgumentException(msg);
         }
 
         @Override
@@ -594,6 +605,26 @@ public class Paths implements PathBuilder {
                 }
             }
             return parent;
+        }
+
+        @Override
+        public Path ancestorOfSize( int size ) {
+            if (size == 0) return EMPTY_PATH;
+            int diff = size() - size;
+            if (diff == 0) return this;
+            if (diff < 0) {
+                String msg = Util.createString("The ancestor size '{0}' is larger than this path's size of '{1}'", size, size());
+                throw new IllegalArgumentException(msg);
+            }
+            if (diff == 1) return parent();
+            if (size == 1) {
+                return new SinglePath(fieldNames[0]);
+            } else if (size == 2) {
+                parent = new DoublePath(fieldNames[0], fieldNames[1]);
+            } else if (size == 3) {
+                parent = new TriplePath(fieldNames[0], fieldNames[1], fieldNames[2]);
+            }
+            return new MultiSegmentPath(Arrays.copyOfRange(this.fieldNames, 0, size));
         }
 
         @Override

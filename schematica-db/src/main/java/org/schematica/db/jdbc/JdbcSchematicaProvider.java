@@ -24,6 +24,7 @@ import org.schematica.db.SchematicaException;
 import org.schematica.db.Store;
 import org.schematica.db.core.Paths;
 import org.schematica.db.core.SimpleDocument;
+import org.schematica.db.core.TypedDocument;
 import org.schematica.db.spi.SchematicaProvider;
 import org.schematica.db.task.FilterBuilder;
 import org.schematica.db.task.MapperBuilder;
@@ -41,8 +42,9 @@ public class JdbcSchematicaProvider implements SchematicaProvider {
 
     @Override
     public Document document( String key,
-                              JsonObject json ) {
-        return new SimpleDocument(key, json);
+                              JsonObject json,
+                              String schemaKey ) {
+        return schemaKey == null ? new SimpleDocument(key, json) : new TypedDocument(key, json, schemaKey);
     }
 
     @Override

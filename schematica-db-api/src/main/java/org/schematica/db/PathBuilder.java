@@ -16,8 +16,6 @@
 
 package org.schematica.db;
 
-import javax.json.JsonObject;
-import javax.json.JsonValue;
 
 /**
  * A component that can build and use paths.
@@ -26,10 +24,15 @@ import javax.json.JsonValue;
  */
 public interface PathBuilder {
 
+    /**
+     * Obtain the empty path. Because {@link Path} instances are immutable, this method may always return the same instance.
+     * 
+     * @return the empty path; never null
+     */
     Path emptyPath();
 
     /**
-     * Parse the supplied path string into its object representation.
+     * Parse the supplied path string into its object representation. See {@link Path} for the format.
      * 
      * @param path the string representation
      * @return the path; never null
@@ -38,7 +41,8 @@ public interface PathBuilder {
     Path parse( String path );
 
     /**
-     * Create a new path for the given sequence of individual path segments.
+     * Create a new path for the given sequence of individual path segments. Each of the supplied segments may contain a single
+     * field name and an optional index (e.g., " {@code addresses[0]"}).
      * 
      * @param segments the segments for the path
      * @return the path; never null
@@ -47,7 +51,8 @@ public interface PathBuilder {
     Path pathWith( String... segments );
 
     /**
-     * Create a new path given the parent path and one or more
+     * Create a new path given the parent path and one or more additional segments. Each of the supplied segments may contain a
+     * single field name and an optional index (e.g., " {@code addresses[0]"}).
      * 
      * @param parent the parent path; may not be null
      * @param firstSegment the first segment
@@ -58,7 +63,4 @@ public interface PathBuilder {
     Path pathWith( Path parent,
                    String firstSegment,
                    String... additionalSegments );
-
-    JsonValue valueAtPath( JsonObject object,
-                           Path path );
 }

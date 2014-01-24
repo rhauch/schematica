@@ -17,6 +17,7 @@
 package org.schematica.db;
 
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 /**
  * An abstraction of a single document that has a unique key and an object representation of its content.
@@ -45,4 +46,13 @@ public interface Document {
      * @return the schema's key; never null
      */
     String getSchemaKey();
+
+    /**
+     * Obtain the value of the field at the given path.
+     * 
+     * @param path the path of the field; may not be null
+     * @return the value; may not be null if the field value is null or if there is no field at the specified path
+     */
+    JsonValue valueAtPath( Path path );
+
 }

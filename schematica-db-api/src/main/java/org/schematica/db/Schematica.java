@@ -20,8 +20,11 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 import javax.json.JsonObject;
 import org.schematica.db.spi.SchematicaProvider;
+import org.schematica.db.task.Filter;
 import org.schematica.db.task.FilterBuilder;
+import org.schematica.db.task.Mapper;
 import org.schematica.db.task.MapperBuilder;
+import org.schematica.db.task.Reducer;
 import org.schematica.db.task.ReducerBuilder;
 
 /**
@@ -65,25 +68,67 @@ public class Schematica {
         return PROVIDER.getStore(properties);
     }
 
+    /**
+     * Get a builder that can be used to obtain common built-in {@link Filter} instances as well as combine both built-in and
+     * custom {@link Filter} instances.
+     * 
+     * @return the filter builder; never null
+     */
     public static FilterBuilder filters() {
         return PROVIDER.getFilterBuilder();
     }
 
+    /**
+     * Get a builder for several common built-in {@link Mapper} instances.
+     * 
+     * @return the mapper builder; never null
+     */
     public static MapperBuilder mappers() {
         return PROVIDER.getMapperBuilder();
     }
 
+    /**
+     * Get a builder for several common built-in {@link Reducer} instances.
+     * 
+     * @return the reduer builder; never null
+     */
     public static ReducerBuilder reducers() {
         return PROVIDER.getReducerBuilder();
     }
 
+    /**
+     * Get a builder for paths.
+     * 
+     * @return the path builder; never null
+     */
     public static PathBuilder pathBuilder() {
         return PROVIDER.getPathBuilder();
     }
 
+    /**
+     * Create a document with the supplied key and document.
+     * 
+     * @param key the document key; may not be null
+     * @param json the object representation; may not be null
+     * @return the document instance; never null
+     */
     public static Document document( String key,
                                      JsonObject json ) {
-        return PROVIDER.document(key, json);
+        return PROVIDER.document(key, json, null);
+    }
+
+    /**
+     * Create a document with the supplied key and document.
+     * 
+     * @param key the document key; may not be null
+     * @param json the object representation; may not be null
+     * @param schemaKey the unique key of the schema that describes this document; may be null if there is no schema
+     * @return the document instance; never null
+     */
+    public static Document document( String key,
+                                     JsonObject json,
+                                     String schemaKey ) {
+        return PROVIDER.document(key, json, schemaKey);
     }
 
 }

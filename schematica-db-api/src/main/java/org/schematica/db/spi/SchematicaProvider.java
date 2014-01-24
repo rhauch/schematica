@@ -40,14 +40,43 @@ public interface SchematicaProvider {
      */
     Store getStore( Properties properties ) throws SchematicaException;
 
+    /**
+     * Create a document with the supplied key and document.
+     * 
+     * @param key the document key; may not be null
+     * @param json the object representation; may not be null
+     * @param schemaKey the unique key of the schema that describes this document; may be null if there is no schema
+     * @return the document instance; never null
+     */
     Document document( String key,
-                       JsonObject json );
+                       JsonObject json,
+                       String schemaKey );
 
+    /**
+     * Get the {@link FilterBuilder} instance for this provider.
+     * 
+     * @return the builder; never null
+     */
     FilterBuilder getFilterBuilder();
 
+    /**
+     * Get the {@link MapperBuilder} instance for this provider.
+     * 
+     * @return the builder; never null
+     */
     MapperBuilder getMapperBuilder();
 
+    /**
+     * Get the {@link ReducerBuilder} instance for this provider.
+     * 
+     * @return the builder; never null
+     */
     ReducerBuilder getReducerBuilder();
 
+    /**
+     * Get the {@link PathBuilder} instance for this provider.
+     * 
+     * @return the builder; never null
+     */
     PathBuilder getPathBuilder();
 }

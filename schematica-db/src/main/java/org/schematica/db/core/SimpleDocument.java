@@ -16,8 +16,11 @@
 
 package org.schematica.db.core;
 
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 import org.schematica.db.Document;
+import org.schematica.db.Path;
 
 /**
  * A {@link Document} implementation includes just the unique key and object representation.
@@ -47,6 +50,31 @@ public class SimpleDocument implements Document {
     @Override
     public String getSchemaKey() {
         return null;
+    }
+
+    @Override
+    public JsonValue valueAtPath( Path path ) {
+        JsonValue obj = getJsonObject();
+        for (String segment : path) {
+            if (obj instanceof JsonObject) {
+                obj = ((JsonObject)obj).get(segment);
+            } else if (obj instanceof JsonArray) {
+                try {
+                    int index = Integer.parseInt(segment);
+                    obj = ((JsonArray)obj).get(index);
+                } catch (NumberFormatException e) {
+                    // the segment is not an index ...
+                    String msg = Util.createString("The segment '{1}' in the path '{0}' was expected to be an array index.",
+                                                   path,
+                                                   segment);
+                    throw new IllegalArgumentException(msg, e);
+                }
+            } else {
+                // The object is not an array or object, so the path is not valid. Find the last path that was valid ...
+                return null;
+            }
+        }
+        return obj; // may be null
     }
 
     @Override
