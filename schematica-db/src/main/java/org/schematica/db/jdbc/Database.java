@@ -154,31 +154,30 @@ public class Database {
         try {
             // Load the default statements, which will be used if any db-specific statements are missing ...
             String statementsFilename = DEFAULT_STATEMENTS_FILE_PATH;
-            InputStream statementStream = getClass().getClassLoader().getResourceAsStream(statementsFilename);
             Properties defaultStatements = new Properties();
-            try {
+            try (InputStream statementStream = getClass().getClassLoader().getResourceAsStream(statementsFilename)) {
                 // LOGGER.trace("Loading default statement from '{0}'", statementsFilename);
                 defaultStatements.load(statementStream);
-            } finally {
-                statementStream.close();
             }
 
             // Look for type-specific statements ...
             statementsFilename = statementsResourcePath(databaseType);
-            statementStream = getClass().getClassLoader().getResourceAsStream(statementsFilename);
-            if (statementStream != null) {
-                // Try to read the type-specific statements ...
-                try {
-                    // LOGGER.trace("Loading DBMS-specific statement from '{0}'", statementsFilename);
-                    statements = new Properties(defaultStatements);
-                    statements.load(statementStream);
-                } finally {
-                    statementStream.close();
+            // Try to read the type-specific statements ...
+            Properties dbStatements = null;
+            try (InputStream statementStream = getClass().getClassLoader().getResourceAsStream(statementsFilename)) {
+                if (statementStream != null) {
+                    dbStatements = new Properties(defaultStatements);
+                    dbStatements.load(statementStream);
                 }
+            }
+
+            if (dbStatements != null) {
+                // LOGGER.trace("Using DBMS-specific statement from '{0}'", statementsFilename);
+                statements = dbStatements;
             } else {
                 // No type-specific statements, so just use the default statements ...
-                statements = defaultStatements;
                 // LOGGER.trace("No DBMS-specific statement found in '{0}'", statementsFilename);
+                statements = defaultStatements;
             }
 
         } catch (IOException e) {
@@ -199,11 +198,9 @@ public class Database {
         try {
             // First, prepare a statement to see if the table exists ...
             boolean createTable = true;
-            try {
-                PreparedStatement exists = prepareStatement("table_exists_query");
+            try (PreparedStatement exists = prepareStatement("table_exists_query")) {
                 // LOGGER.trace("Running statement: {0}", exists);
                 exists.execute();
-                exists.close();
                 createTable = false;
             } catch (SQLException e) {
                 // proceed to create the table ...
@@ -211,11 +208,9 @@ public class Database {
 
             if (createTable) {
                 // LOGGER.debug("Unable to find existing table. Attempting to create '{0}' table in {1}", tableName, connection);
-                try {
-                    PreparedStatement create = prepareStatement("create_table");
+                try (PreparedStatement create = prepareStatement("create_table")) {
                     // LOGGER.trace("Running statement: {0}", create);
                     create.execute();
-                    create.close();
                 } catch (SQLException e) {
                     String msg = Util.createString("Error creating database table {0} in database {1} using connection {2}: {3}",
                                                    tableName,
@@ -614,9 +609,8 @@ public class Database {
      */
     public static <T> T executeQuery( PreparedStatement sql,
                                       ResultSetProcessor<T> processor ) throws SchematicaException {
-        try {
+        try (ResultSet rs = sql.executeQuery()) {
             // LOGGER.trace("Running statement: {0}", sql);
-            ResultSet rs = sql.executeQuery();
             return rs == null ? null : process(rs, processor); // always closes result set
         } catch (SQLException e) {
             throw new SchematicaException(e);
@@ -660,33 +654,22 @@ public class Database {
     }
 
     /**
-     * Process the result set using the supplied processor. The result set will always be closed after the processing has been
-     * done.
+     * Process the result set using the supplied processor. The result set will not be closed.
      * 
      * @param resultSet the result set; may not be null
      * @param processor the processor; may not be null
      * @return the result of the processing
      * @throws SchematicaException if there is a problem processing the results
      */
-    public static <T> T process( ResultSet resultSet,
-                                 ResultSetProcessor<T> processor ) throws SchematicaException {
-        boolean error = false;
+    protected static <T> T process( ResultSet resultSet,
+                                    ResultSetProcessor<T> processor ) throws SchematicaException {
         try {
             return processor.process(resultSet);
         } catch (RuntimeException e) { // includes SchematicaException
-            error = true;
             throw e; // just rethrow ...
         } catch (SQLException | IOException e) {
-            error = true;
             // wrap the exception ...
             throw new SchematicaException(e);
-        } finally {
-            // Always close the result set ...
-            try {
-                resultSet.close();
-            } catch (SQLException e) {
-                if (!error) throw new SchematicaException(e);
-            }
         }
     }
 

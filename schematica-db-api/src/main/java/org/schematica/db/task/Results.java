@@ -24,11 +24,12 @@ import org.schematica.db.Store;
  * @author Randall Hauch (rhauch@redhat.com)
  * @param <T> the type of result that should be returned when this task is completed.
  */
-public interface Results<T> {
+public interface Results<T> extends AutoCloseable {
 
     /**
      * Release all resources that are or have been in-use.
      */
+    @Override
     void close();
 
     /**
