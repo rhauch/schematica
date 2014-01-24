@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.schematica.json;
+package org.schematica.json.impl;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,6 +30,8 @@ import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParserFactory;
+import org.schematica.json.JsonArrayBuilder;
+import org.schematica.json.JsonObjectBuilder;
 import org.schematica.json.spi.JsonProvider;
 
 /**

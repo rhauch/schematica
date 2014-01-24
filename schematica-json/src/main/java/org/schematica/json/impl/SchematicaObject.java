@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.schematica.json;
+package org.schematica.json.impl;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -27,7 +27,10 @@ import javax.json.JsonException;
 import javax.json.JsonNumber;
 import javax.json.JsonString;
 import javax.json.JsonValue;
-import org.schematica.json.util.Base64;
+import org.schematica.json.EditableJsonObject;
+import org.schematica.json.JsonArray;
+import org.schematica.json.JsonObject;
+import org.schematica.json.impl.util.Base64;
 
 /**
  * @author Horia Chiorean (hchiorea@redhat.com)

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.schematica.json.util;
+package org.schematica.json.impl.util;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

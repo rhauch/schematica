@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.schematica.json;
+package org.schematica.json.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import javax.json.JsonValue;
-import org.schematica.json.util.Base64;
+import org.schematica.json.JsonArray;
+import org.schematica.json.JsonArrayBuilder;
+import org.schematica.json.impl.util.Base64;
 
 /**
  * @author Horia Chiorean (hchiorea@redhat.com)
@@ -33,6 +35,7 @@ public class SchematicaArrayBuilder implements JsonArrayBuilder {
         this.defaultBuilder = defaultBuilder;
     }
 
+    @Override
     public JsonArrayBuilder add( JsonValue value ) {
         this.defaultBuilder.add(value);
         return this;

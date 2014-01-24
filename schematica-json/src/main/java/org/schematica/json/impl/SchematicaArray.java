@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.schematica.json;
+package org.schematica.json.impl;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -28,7 +28,10 @@ import javax.json.JsonException;
 import javax.json.JsonNumber;
 import javax.json.JsonString;
 import javax.json.JsonValue;
-import org.schematica.json.util.Base64;
+import org.schematica.json.EditableJsonArray;
+import org.schematica.json.JsonArray;
+import org.schematica.json.JsonObject;
+import org.schematica.json.impl.util.Base64;
 
 /**
  * @author Horia Chiorean (hchiorea@redhat.com)
@@ -41,6 +44,7 @@ public class SchematicaArray implements JsonArray {
         this.defaultArray = defaultArray;
     }
 
+    @Override
     public JsonObject getJsonObject( int index ) {
         return new SchematicaObject(defaultArray.getJsonObject(index));
     }
@@ -316,7 +320,7 @@ public class SchematicaArray implements JsonArray {
         if (this == o) {
             return true;
         }
-        if (! (o instanceof javax.json.JsonArray)) {
+        if (!(o instanceof javax.json.JsonArray)) {
             return false;
         }
 
@@ -336,13 +340,13 @@ public class SchematicaArray implements JsonArray {
 
     @Override
     public EditableJsonArray edit() {
-        //TODO author=Horia Chiorean date=1/24/14 description=implement
+        // TODO author=Horia Chiorean date=1/24/14 description=implement
         return null;
     }
 
     @Override
     public JsonArray merge( javax.json.JsonArray other ) {
-        //TODO author=Horia Chiorean date=1/24/14 description=implement
+        // TODO author=Horia Chiorean date=1/24/14 description=implement
         return this;
     }
 }

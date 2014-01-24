@@ -94,10 +94,13 @@ public class SchematicaObjectBuilderTest {
 
         JsonObject object = builder.build();
 
-        assertEquals(javax.json.Json.createObjectBuilder().add("name", "John").add("age", 15).build(), object.getJsonObject("jsonObject"));
-        assertEquals(javax.json.Json.createArrayBuilder().add("string").add(false).add(1).build(), object.getJsonArray("jsonArray"));
-        assertEquals(Json.createObjectBuilder().add("name", "Michael").add("phone", 123456778).build(), object.getJsonObject(
-                "schematicaObject"));
-        assertEquals(Json.createArrayBuilder().add("other string").add(true).add(2).add(date).build(), object.getJsonArray("schematicaArray"));
+        assertEquals(javax.json.Json.createObjectBuilder().add("name", "John").add("age", 15).build(),
+                     object.getJsonObject("jsonObject"));
+        assertEquals(javax.json.Json.createArrayBuilder().add("string").add(false).add(1).build(),
+                     object.getJsonArray("jsonArray"));
+        assertEquals(Json.createObjectBuilder().add("name", "Michael").add("phone", 123456778).build(),
+                     object.getJsonObject("schematicaObject"));
+        assertEquals(Json.createArrayBuilder().add("other string").add(true).add(2).add(date).build(),
+                     object.getJsonArray("schematicaArray"));
     }
 }

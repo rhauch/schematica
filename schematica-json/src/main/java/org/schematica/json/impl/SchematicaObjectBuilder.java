@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.schematica.json;
+package org.schematica.json.impl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import javax.json.JsonValue;
-import org.schematica.json.util.Base64;
+import org.schematica.json.JsonObject;
+import org.schematica.json.JsonObjectBuilder;
+import org.schematica.json.impl.util.Base64;
 
 /**
  * @author Horia Chiorean (hchiorea@redhat.com)
