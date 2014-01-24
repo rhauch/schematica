@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.schematica</groupId>
+        <artifactId>schematica-parent</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath>../schematica-parent/pom.xml</relativePath>
+    </parent>
+
+    <!-- The groupId and version values are inherited from parent -->
+    <artifactId>schematica-db</artifactId>
+    <packaging>jar</packaging>
+    <name>Schematica DB Implementation</name>
+    <description>Implementation for Schematica DB, a library that stores, accesses, queries, and uses JSON documents.</description>
+
+    <!--
+         Define the dependencies. Note that all version and scopes default to
+         those defined in the dependencyManagement section of the parent pom.
+     -->
+    <dependencies>
+        <dependency>
+            <groupId>org.schematica</groupId>
+            <artifactId>schematica-db-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.json</groupId>
+            <artifactId>javax.json-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+
+        <!--   Testing   -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

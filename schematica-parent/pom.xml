@@ -109,19 +109,19 @@
 
             <dependency>
                 <groupId>org.schematica</groupId>
-                <artifactId>schematica-json-impl</artifactId>
+                <artifactId>schematica-json</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.schematica</groupId>
-                <artifactId>schematica-api</artifactId>
+                <artifactId>schematica-db-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.schematica</groupId>
-                <artifactId>schematica-impl</artifactId>
+                <artifactId>schematica-db</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
