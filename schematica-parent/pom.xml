@@ -84,6 +84,7 @@
         <hamcrest.version>1.3</hamcrest.version>
         <log4j.version>1.2.16</log4j.version>
         <json.version>1.0</json.version>
+        <glassfish.json.version>1.0.4</glassfish.json.version>
 
         <!--
           Maven plugin versions
@@ -102,6 +103,18 @@
         <dependencies>
             <dependency>
                 <groupId>org.schematica</groupId>
+                <artifactId>schematica-json-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.schematica</groupId>
+                <artifactId>schematica-json-impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.schematica</groupId>
                 <artifactId>schematica-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -116,14 +129,18 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>${log4j.version}</version>
-                <scope>compile</scope>
             </dependency>
 
             <dependency>
                 <groupId>javax.json</groupId>
                 <artifactId>javax.json-api</artifactId>
                 <version>${json.version}</version>
-                <scope>compile</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.json</artifactId>
+                <version>${glassfish.json.version}</version>
             </dependency>
 
             <!--

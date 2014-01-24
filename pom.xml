@@ -17,6 +17,8 @@
 
     <modules>
         <module>schematica-parent</module>
+        <module>schematica-json-api</module>
+        <module>schematica-json</module>
         <module>schematica-api</module>
         <module>schematica-impl</module>
     </modules>
