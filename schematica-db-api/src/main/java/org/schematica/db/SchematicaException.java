@@ -35,17 +35,16 @@ public class SchematicaException extends RuntimeException {
     }
 
     /**
-     * /** Create an exception with the supplied cause.
+     * Create an exception with the supplied cause.
      * 
      * @param cause the cause
      */
     public SchematicaException( Throwable cause ) {
         super(cause);
-
     }
 
     /**
-     * Create an exception with the supplied message.
+     * Create an exception with the supplied message and cause.
      * 
      * @param message the message
      * @param cause the cause
@@ -53,6 +52,5 @@ public class SchematicaException extends RuntimeException {
     public SchematicaException( String message,
                                 Throwable cause ) {
         super(message, cause);
-
     }
 }

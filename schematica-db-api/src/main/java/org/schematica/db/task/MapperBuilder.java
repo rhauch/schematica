@@ -17,11 +17,13 @@
 package org.schematica.db.task;
 
 import org.schematica.db.Document;
+import org.schematica.db.Schematica;
 
 /**
  * A factory or builder for several commonly-used {@link Mapper}s.
  * 
  * @author Randall Hauch (rhauch@redhat.com)
+ * @see Schematica#mappers()
  */
 public interface MapperBuilder {
 
@@ -49,9 +51,4 @@ public interface MapperBuilder {
      * @return the mapper; never null
      */
     Mapper<String, Document> documents();
-
-    Mapper<String, Long> longValue( String fieldOrPath );
-
-    Mapper<String, Long> longValue( String fieldOrPath,
-                                    String outputKey );
 }

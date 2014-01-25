@@ -21,10 +21,15 @@ import org.schematica.db.Document;
 /**
  * An interface that defines the "map" phase of the MapReduce procedure. The {@link #map(Document, Collector)} method is called
  * once for each document, and the implementation should place in the {@link Collector} the output key/value pair(s).
+ * <p>
+ * A few {@link MapperBuilder standard mappers} are available and should be used if they do what an application expectes. However,
+ * much of the time these built-in mappers will not be sufficient and applications will simply implement their own mappers.
+ * </p>
  * 
  * @param <KeyType> the type of key
  * @param <ValueType> the type of value
  * @author Randall Hauch (rhauch@redhat.com)
+ * @see MapperBuilder
  */
 public interface Mapper<KeyType, ValueType> {
 
@@ -44,6 +49,7 @@ public interface Mapper<KeyType, ValueType> {
      * @param <K> the type of the names
      * @param <V> the type of the values
      * @author Randall Hauch (rhauch@redhat.com)
+     * @see Mapper#map(Document, Collector)
      */
     public interface Collector<K, V> {
         /**

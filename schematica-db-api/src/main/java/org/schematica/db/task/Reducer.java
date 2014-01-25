@@ -19,12 +19,18 @@ package org.schematica.db.task;
 import java.util.Iterator;
 
 /**
- * An interface that defines the "reduce" phase of the MapReduce procedure. The reduce phase is called at least once for each
- * output key and the set of values for that output key.
+ * An interface that defines the "reduce" phase of the MapReduce procedure. The reduce phase is called at least once for a set of
+ * output values and a corresponding output key.
+ * <p>
+ * A few {@link ReducerBuilder standard reducers} are available and should be used if they do what an application expectes.
+ * However, much of the time these built-in reducers will not be sufficient and applications will simply implement their own
+ * reducers.
+ * </p>
  * 
- * @param <KeyType> the type of key
- * @param <ValueType> the type of value
+ * @param <KeyType> the type of key output by the {@link Mapper}
+ * @param <ValueType> the type of value output by the {@link Mapper}
  * @author Randall Hauch (rhauch@redhat.com)
+ * @see ReducerBuilder
  */
 public interface Reducer<KeyType, ValueType> {
     /**

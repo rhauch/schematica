@@ -38,7 +38,7 @@ import org.schematica.db.task.ReducerBuilder;
  */
 public class Schematica {
 
-    private static final String DEFAULT_PROVIDER = "org.schematic.impl.BasicSchematicProvider";
+    private static final String DEFAULT_PROVIDER = "org.schematic.db.jdbc.JdbcSchematicProvider";
 
     private static SchematicaProvider loadProvider() {
         // Find the first implementation found using the ServiceLoader ...
@@ -49,9 +49,9 @@ public class Schematica {
         try {
             return (SchematicaProvider)Class.forName(DEFAULT_PROVIDER).newInstance();
         } catch (ClassNotFoundException e) {
-            throw new SchematicaException("Schematicaprovider " + DEFAULT_PROVIDER + " not found", e);
+            throw new SchematicaException("Schematica provider " + DEFAULT_PROVIDER + " not found", e);
         } catch (Exception e) {
-            throw new SchematicaException("Schematicaprovider " + DEFAULT_PROVIDER + " could not be instantiated: " + e, e);
+            throw new SchematicaException("Schematica provider " + DEFAULT_PROVIDER + " could not be instantiated: " + e, e);
         }
     }
 

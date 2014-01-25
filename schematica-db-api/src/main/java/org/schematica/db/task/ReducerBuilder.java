@@ -16,10 +16,13 @@
 
 package org.schematica.db.task;
 
+import org.schematica.db.Schematica;
+
 /**
  * A factory or builder for several commonly-used {@link Reducer}s.
  * 
  * @author Randall Hauch (rhauch@redhat.com)
+ * @see Schematica#reducers()
  */
 public interface ReducerBuilder {
 
@@ -44,6 +47,12 @@ public interface ReducerBuilder {
      */
     NumericReducer<Long> longs();
 
+    /**
+     * A set of standard, built-in {@link Reducer} implementations for a specific numeric type.
+     * 
+     * @param <T> the type upon which the reducers operate
+     * @author Randall Hauch (rhauch@redhat.com)
+     */
     static interface NumericReducer<T extends Number> {
         /**
          * Create a reducer that simply computes the sum of all supplied values, regardless of the key.

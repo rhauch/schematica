@@ -21,8 +21,8 @@ import org.schematica.db.Document;
 
 /**
  * A simple component that filters documents. All filters must be immutable, so that calling
- * {@link #satisfies(Document, JsonObject)} (or any other method) will never cause the internal state of the filter to be modified
- * or changed.
+ * {@link #satisfies(Document, JsonObject)} (or any other method) will never cause the behavior of the filter to be modified or
+ * changed.
  * <p>
  * Some pre-defined filters can be obtained from {@link FilterBuilder}, and these are optimized within the system to push down as
  * much of the filter criteria down to the underlying database. But you can also implement {@link Filter} with your own logic;

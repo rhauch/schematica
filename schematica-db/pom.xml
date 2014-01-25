@@ -20,14 +20,27 @@
          those defined in the dependencyManagement section of the parent pom.
      -->
     <dependencies>
+        <!-- Our public API -->
         <dependency>
             <groupId>org.schematica</groupId>
             <artifactId>schematica-db-api</artifactId>
         </dependency>
 
+        <!-- The JSON Processing and Schematica JSON APIs -->
         <dependency>
             <groupId>javax.json</groupId>
             <artifactId>javax.json-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.schematica</groupId>
+            <artifactId>schematica-json-api</artifactId>
+        </dependency>
+
+        <!-- The Schematica JSON implementation -->
+        <dependency>
+            <groupId>org.schematica</groupId>
+            <artifactId>schematica-json</artifactId>
         </dependency>
 
         <dependency>

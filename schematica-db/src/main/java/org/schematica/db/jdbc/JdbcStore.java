@@ -27,24 +27,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.json.JsonObject;
+import org.schematica.db.BulkWriteReport;
 import org.schematica.db.Document;
-import org.schematica.db.DocumentUpdates;
 import org.schematica.db.Observation;
 import org.schematica.db.Schemas;
 import org.schematica.db.SchematicaException;
 import org.schematica.db.Sequence;
 import org.schematica.db.Store;
+import org.schematica.db.core.BulkWriteReports;
+import org.schematica.db.core.BulkWriteReports.ReportBuilder;
 import org.schematica.db.core.Collectors;
+import org.schematica.db.core.Collectors.Collector;
 import org.schematica.db.core.DocumentFormat;
 import org.schematica.db.core.SimpleDocument;
 import org.schematica.db.core.Util;
-import org.schematica.db.core.Collectors.Collector;
 import org.schematica.db.jdbc.Database.ResultSetProcessor;
 import org.schematica.db.task.Filter;
 import org.schematica.db.task.Mapper;
 import org.schematica.db.task.Results;
 import org.schematica.db.task.Task;
-import org.schematica.db.task.TaskMaker;
+import org.schematica.db.task.TaskBuilder;
 
 /**
  * @author Randall Hauch (rhauch@redhat.com)
@@ -64,7 +66,7 @@ public class JdbcStore implements Store {
     }
 
     public JdbcStore( Connection connection,
-                       DocumentFormat defaultFormat ) {
+                      DocumentFormat defaultFormat ) {
         this.database = new Database(connection);
         this.converter = defaultFormat;
     }
@@ -119,27 +121,24 @@ public class JdbcStore implements Store {
     }
 
     @Override
-    public void writeMultiple( Iterable<Document> documents ) {
-        writeMultiple(documents, null);
-    }
-
-    @Override
-    public void writeMultiple( Iterable<Document> documents,
-                               DocumentUpdates updates ) {
+    public BulkWriteReport writeMultiple( Iterable<Document> documents,
+                                          boolean captureResults ) {
+        ReportBuilder reportBuilder = BulkWriteReports.create(captureResults);
         for (Document document : documents) {
             String key = document.getKey();
             try {
                 PreparedStatement sql = database.writeDocumentSQL(key, null, converter.write(document), converter.getType());
                 int affected = Database.executeUpdate(sql);
-                if (updates != null) {
-                    if (affected > 1) updates.recordOverwritten(key);
-                    else updates.recordUpdated(key);
+                if (reportBuilder.isRecording()) {
+                    if (affected > 1) reportBuilder.recordOverwritten(key);
+                    else reportBuilder.recordUpdated(key);
                 }
             } catch (IOException e) {
                 String msg = Util.createString("Error converting document {0}->{1} was not found: {2}", key, document, e);
                 throw new SchematicaException(msg);
             }
         }
+        return reportBuilder.getReport();
     }
 
     @Override
@@ -187,13 +186,13 @@ public class JdbcStore implements Store {
     }
 
     @Override
-    public TaskMaker filter( Filter filter ) {
+    public TaskBuilder filter( Filter filter ) {
         return null;
     }
 
     @Override
-    public TaskMaker all() {
-        return new TaskMaker() {
+    public TaskBuilder all() {
+        return new TaskBuilder() {
             @Override
             public Task<Long> totalCount() {
                 // Return a new task that, when called, queries for the number of documents and returns that count ...
@@ -264,7 +263,7 @@ public class JdbcStore implements Store {
             }
 
             @Override
-            public <Kout, Vout> Reducable<Kout, Vout> map( Mapper<Kout, Vout> mapper ) {
+            public <Kout, Vout> Reducible<Kout, Vout> map( Mapper<Kout, Vout> mapper ) {
                 return null;
             }
         };

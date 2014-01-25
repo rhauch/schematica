@@ -20,9 +20,12 @@ package org.schematica.db;
  * @author Randall Hauch (rhauch@redhat.com)
  */
 public interface Observer {
+
+    /*
     void notify( ChangeSet changes );
 
     public static interface ChangeSet {
 
     }
+    */
 }

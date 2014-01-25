@@ -61,8 +61,8 @@ public class StoreTest {
         Map<String, Document> docs = task.call().output();
     }
 
-    public void getMaximumLongValueInAllDocumentsWithFluentAPI() throws Exception {
-        Task<Map<String, Long>> task = store.all().map(mappers.longValue("age")).reduce(reducers.longs().maximum());
-        Long maxAge = task.call().output().get("age");
-    }
+    // public void getMaximumLongValueInAllDocumentsWithFluentAPI() throws Exception {
+    // Task<Map<String, Long>> task = store.all().map(mappers.longValue("age")).reduce(reducers.longs().maximum());
+    // Long maxAge = task.call().output().get("age");
+    // }
 }

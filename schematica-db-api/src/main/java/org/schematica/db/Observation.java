@@ -16,13 +16,15 @@
 
 package org.schematica.db;
 
-import java.util.Observer;
 
 /**
  * @author Randall Hauch (rhauch@redhat.com)
  */
 public interface Observation {
+
+    /*
     void addObserver( Observer observer );
 
     void removeObserver( Observer observer );
+    */
 }

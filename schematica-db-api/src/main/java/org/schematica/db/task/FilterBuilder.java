@@ -20,11 +20,13 @@ import java.sql.Date;
 import java.util.regex.Pattern;
 import javax.json.JsonNumber;
 import javax.json.JsonValue;
+import org.schematica.db.Schematica;
 
 /**
  * A factory for some standard and common {@link Filter} implementations.
  * 
  * @author Randall Hauch (rhauch@redhat.com)
+ * @see Schematica#filters()
  */
 public interface FilterBuilder {
 
@@ -119,14 +121,14 @@ public interface FilterBuilder {
      * @param nameOrPath the name or path of the field; may not be null
      * @return the component that defines the field criteria; never null
      */
-    PathFilter field( String nameOrPath );
+    PathFilterBuilder field( String nameOrPath );
 
     /**
-     * A component used to create a {@link Filter} based upon the value of some field in the documents.
+     * A component used to create a {@link Filter} based upon the value of a field at a specific path in the documents.
      * 
      * @author Randall Hauch (rhauch@redhat.com)
      */
-    static interface PathFilter {
+    static interface PathFilterBuilder {
         /**
          * Create a filter that is satisfied only for documents whose field at the given name or path exists and has a non-null
          * value.
@@ -358,12 +360,12 @@ public interface FilterBuilder {
     /**
      * The set of numeric operators.
      * 
-     * @see PathFilter#is(Operator, double)
-     * @see PathFilter#is(Operator, float)
-     * @see PathFilter#is(Operator, int)
-     * @see PathFilter#is(Operator, short)
-     * @see PathFilter#is(Operator, long)
-     * @see PathFilter#is(Operator, JsonNumber)
+     * @see PathFilterBuilder#is(Operator, double)
+     * @see PathFilterBuilder#is(Operator, float)
+     * @see PathFilterBuilder#is(Operator, int)
+     * @see PathFilterBuilder#is(Operator, short)
+     * @see PathFilterBuilder#is(Operator, long)
+     * @see PathFilterBuilder#is(Operator, JsonNumber)
      * @author Randall Hauch (rhauch@redhat.com)
      */
     public static enum Operator {

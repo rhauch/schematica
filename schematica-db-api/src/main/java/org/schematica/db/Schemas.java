@@ -16,13 +16,13 @@
 
 package org.schematica.db;
 
-import javax.json.JsonObject;
 
 /**
  * @author Randall Hauch (rhauch@redhat.com)
  */
 public interface Schemas {
 
+    /*
     Validator getValidator( String schemaUri );
 
     void register( String schemaUri,
@@ -38,4 +38,5 @@ public interface Schemas {
     public interface Results {
 
     }
+    */
 }

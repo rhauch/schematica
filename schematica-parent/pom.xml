@@ -101,6 +101,7 @@
      -->
     <dependencyManagement>
         <dependencies>
+            <!-- BEGIN: Our modules -->
             <dependency>
                 <groupId>org.schematica</groupId>
                 <artifactId>schematica-json-api</artifactId>
@@ -124,6 +125,7 @@
                 <artifactId>schematica-db</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!-- END: Our modules -->
 
             <dependency>
                 <groupId>log4j</groupId>
@@ -131,16 +133,19 @@
                 <version>${log4j.version}</version>
             </dependency>
 
+            <!-- This contains just the JSON-Processing API -->
             <dependency>
                 <groupId>javax.json</groupId>
                 <artifactId>javax.json-api</artifactId>
                 <version>${json.version}</version>
             </dependency>
 
+            <!-- This contains the JSON-Processing API plus reference implementation, and is needed only during runtime. -->
             <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.json</artifactId>
                 <version>${glassfish.json.version}</version>
+                <scope>runtime</scope>
             </dependency>
 
             <!--

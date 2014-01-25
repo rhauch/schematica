@@ -25,6 +25,11 @@
             <artifactId>javax.json-api</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.schematica</groupId>
+            <artifactId>schematica-json-api</artifactId>
+        </dependency>
+
         <!--   Testing   -->
         <dependency>
             <groupId>junit</groupId>

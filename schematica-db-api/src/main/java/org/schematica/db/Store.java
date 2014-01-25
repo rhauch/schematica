@@ -18,8 +18,9 @@ package org.schematica.db;
 
 import javax.json.JsonObject;
 import org.schematica.db.task.Filter;
+import org.schematica.db.task.FilterBuilder;
 import org.schematica.db.task.Task;
-import org.schematica.db.task.TaskMaker;
+import org.schematica.db.task.TaskBuilder;
 
 /**
  * @author Randall Hauch (rhauch@redhat.com)
@@ -59,8 +60,7 @@ public interface Store {
      * @see #write(Document)
      * @see #writeIfAbsent(Document)
      * @see #writeIfAbsent(String, JsonObject)
-     * @see #writeMultiple(Iterable)
-     * @see #writeMultiple(Iterable, DocumentUpdates)
+     * @see #writeMultiple(Iterable, boolean)
      */
     boolean write( String key,
                    JsonObject document );
@@ -73,8 +73,7 @@ public interface Store {
      * @see #write(String, JsonObject)
      * @see #writeIfAbsent(Document)
      * @see #writeIfAbsent(String, JsonObject)
-     * @see #writeMultiple(Iterable)
-     * @see #writeMultiple(Iterable, DocumentUpdates)
+     * @see #writeMultiple(Iterable, boolean)
      */
     boolean write( Document document );
 
@@ -87,8 +86,7 @@ public interface Store {
      * @see #write(Document)
      * @see #write(String, JsonObject)
      * @see #writeIfAbsent(Document)
-     * @see #writeMultiple(Iterable)
-     * @see #writeMultiple(Iterable, DocumentUpdates)
+     * @see #writeMultiple(Iterable, boolean)
      */
     boolean writeIfAbsent( String key,
                            JsonObject document );
@@ -101,8 +99,7 @@ public interface Store {
      * @see #write(Document)
      * @see #write(String, JsonObject)
      * @see #writeIfAbsent(String, JsonObject)
-     * @see #writeMultiple(Iterable)
-     * @see #writeMultiple(Iterable, DocumentUpdates)
+     * @see #writeMultiple(Iterable, boolean)
      */
     boolean writeIfAbsent( Document document );
 
@@ -185,28 +182,16 @@ public interface Store {
      * Store the documents, overwriting or updating any documents already stored under the same keys.
      * 
      * @param documents the documents; may not be null
-     * @see #writeMultiple(Iterable, DocumentUpdates)
+     * @param captureResults true if this method should capture and return whether each document was updated or overwritten
+     * @return the report of the actions taken for each document; never null but empty when {@code captureResults} is
+     *         {@code false}.
      * @see #write(Document)
      * @see #write(String, JsonObject)
      * @see #writeIfAbsent(Document)
      * @see #writeIfAbsent(String, JsonObject)
      */
-    void writeMultiple( Iterable<Document> documents );
-
-    /**
-     * Store the documents, overwriting or updating any documents already stored under the same keys.
-     * 
-     * @param documents the documents; may not be null
-     * @param updates the component that should be called based upon which documents were updated vs overwritten; may be null if
-     *        this information is not needed
-     * @see #writeMultiple(Iterable)
-     * @see #write(Document)
-     * @see #write(String, JsonObject)
-     * @see #writeIfAbsent(Document)
-     * @see #writeIfAbsent(String, JsonObject)
-     */
-    void writeMultiple( Iterable<Document> documents,
-                        DocumentUpdates updates );
+    BulkWriteReport writeMultiple( Iterable<Document> documents,
+                                   boolean captureResults );
 
     /**
      * Remove the documents with the supplied keys. This method does nothing if a persisted document with the given key does not
@@ -218,23 +203,24 @@ public interface Store {
 
     /**
      * Begin to create a {@link Task} that will find and process in some way all of the persisted documents that satisfy the
-     * supplied filter. What processing will be done is dependent upon how the returned {@link TaskMaker} instance is used and the
-     * resulting {@link Task} is defined.
+     * supplied filter. What processing will be done is dependent upon how the returned {@link TaskBuilder} instance is used and
+     * the resulting {@link Task} is defined.
      * 
      * @param filter the document filter that must be satisfied; may not be null
-     * @return the {@link TaskMaker} that should be used to construct the callable {@link Task}; never null
+     * @return the {@link TaskBuilder} that should be used to complete the building of the callable {@link Task}; never null
      * @see #all()
+     * @see FilterBuilder
      */
-    TaskMaker filter( Filter filter );
+    TaskBuilder filter( Filter filter );
 
     /**
      * Begin to create a {@link Task} that will find and process in some way all of the persisted documents. What processing will
-     * be done is dependent upon how the returned {@link TaskMaker} instance is used and the resulting {@link Task} is defined.
+     * be done is dependent upon how the returned {@link TaskBuilder} instance is used and the resulting {@link Task} is defined.
      * 
-     * @return the {@link TaskMaker} that should be used to construct the callable {@link Task}; never null
+     * @return the {@link TaskBuilder} that should be used to complete the building of the callable {@link Task}; never null
      * @see #filter(Filter)
      */
-    TaskMaker all();
+    TaskBuilder all();
 
     Schemas getSchemas();
 

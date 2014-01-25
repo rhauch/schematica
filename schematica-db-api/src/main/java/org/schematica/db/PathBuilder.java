@@ -16,11 +16,11 @@
 
 package org.schematica.db;
 
-
 /**
- * A component that can build and use paths.
+ * A component that can build paths.
  * 
  * @author Randall Hauch (rhauch@redhat.com)
+ * @see Schematica#pathBuilder()
  */
 public interface PathBuilder {
 
