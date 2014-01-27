@@ -67,7 +67,7 @@ public class SchematicaObjectBuilderTest {
         assertEquals(bigIntegerValue, object.getBigInteger("bigInteger"));
         assertEquals(stringValue, object.getString("string"));
         assertEquals(intValue, object.getInt("int"));
-        assertEquals(longValue, object.getLong("long"));
+        assertEquals(longValue, (long) object.getLong("long"));
         assertEquals(doubleValue, object.getDouble("double"), 0);
         assertArrayEquals(bytes, object.getBinary("binary"));
     }

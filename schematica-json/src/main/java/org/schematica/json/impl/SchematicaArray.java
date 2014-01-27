@@ -19,24 +19,26 @@ package org.schematica.json.impl;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
+import java.util.AbstractList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import javax.json.JsonException;
 import javax.json.JsonNumber;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import org.schematica.json.EditableJsonArray;
+import org.schematica.json.Json;
 import org.schematica.json.JsonArray;
+import org.schematica.json.JsonArrayBuilder;
 import org.schematica.json.JsonObject;
 import org.schematica.json.impl.util.Base64;
 
 /**
  * @author Horia Chiorean (hchiorea@redhat.com)
  */
-public class SchematicaArray implements JsonArray {
+public class SchematicaArray extends AbstractList<JsonValue> implements JsonArray {
+
+    static final SchematicaArray EMPTY_INSTANCE = new SchematicaArray(javax.json.Json.createArrayBuilder().build());
 
     private final javax.json.JsonArray defaultArray;
 
@@ -193,7 +195,7 @@ public class SchematicaArray implements JsonArray {
 
     @Override
     public ValueType getValueType() {
-        return defaultArray.getValueType();
+        return ValueType.ARRAY;
     }
 
     @Override
@@ -202,117 +204,8 @@ public class SchematicaArray implements JsonArray {
     }
 
     @Override
-    public boolean isEmpty() {
-        return defaultArray.isEmpty();
-    }
-
-    @Override
-    public boolean contains( Object o ) {
-        return defaultArray.contains(o);
-    }
-
-    @Override
-    public Iterator<JsonValue> iterator() {
-        return defaultArray.iterator();
-    }
-
-    @Override
-    public Object[] toArray() {
-        return defaultArray.toArray();
-    }
-
-    @Override
-    public <T> T[] toArray( T[] a ) {
-        return defaultArray.toArray(a);
-    }
-
-    @Override
-    public boolean add( JsonValue jsonValue ) {
-        return defaultArray.add(jsonValue);
-    }
-
-    @Override
-    public boolean remove( Object o ) {
-        return defaultArray.remove(o);
-    }
-
-    @Override
-    public boolean containsAll( Collection<?> c ) {
-        return defaultArray.containsAll(c);
-    }
-
-    @Override
-    public boolean addAll( Collection<? extends JsonValue> c ) {
-        return defaultArray.addAll(c);
-    }
-
-    @Override
-    public boolean addAll( int index,
-                           Collection<? extends JsonValue> c ) {
-        return defaultArray.addAll(index, c);
-    }
-
-    @Override
-    public boolean removeAll( Collection<?> c ) {
-        return defaultArray.removeAll(c);
-    }
-
-    @Override
-    public boolean retainAll( Collection<?> c ) {
-        return defaultArray.retainAll(c);
-    }
-
-    @Override
-    public void clear() {
-        defaultArray.clear();
-    }
-
-    @Override
     public JsonValue get( int index ) {
         return defaultArray.get(index);
-    }
-
-    @Override
-    public JsonValue set( int index,
-                          JsonValue element ) {
-        return defaultArray.set(index, element);
-    }
-
-    @Override
-    public void add( int index,
-                     JsonValue element ) {
-        defaultArray.add(index, element);
-    }
-
-    @Override
-    public JsonValue remove( int index ) {
-        return defaultArray.remove(index);
-    }
-
-    @Override
-    public int indexOf( Object o ) {
-        return defaultArray.indexOf(o);
-    }
-
-    @Override
-    public int lastIndexOf( Object o ) {
-        return defaultArray.lastIndexOf(o);
-    }
-
-    @Override
-    public ListIterator<JsonValue> listIterator() {
-        return defaultArray.listIterator();
-    }
-
-    @Override
-    public ListIterator<JsonValue> listIterator( int index ) {
-        return defaultArray.listIterator(index);
-    }
-
-    @Override
-    public List<JsonValue> subList( int fromIndex,
-                                    int toIndex ) {
-        return defaultArray.subList(fromIndex, toIndex);
     }
 
     @Override
@@ -340,13 +233,23 @@ public class SchematicaArray implements JsonArray {
 
     @Override
     public EditableJsonArray edit() {
-        // TODO author=Horia Chiorean date=1/24/14 description=implement
-        return null;
+        return new SchematicaEditableArray(this);
     }
 
     @Override
     public JsonArray merge( javax.json.JsonArray other ) {
-        // TODO author=Horia Chiorean date=1/24/14 description=implement
-        return this;
+        javax.json.JsonArray mergeSource = other;
+        if (other instanceof SchematicaEditableArray && ((SchematicaEditableArray) other).getArray().equals(this)) {
+            mergeSource = (((SchematicaEditableArray) other)).changesToJson();
+        }
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (JsonValue jsonValue : this) {
+            arrayBuilder.add(jsonValue);
+        }
+        for (JsonValue otherJsonValue : mergeSource) {
+            //TODO author=Horia Chiorean date=1/27/14 description=Should keep or ignore NULLs ?
+            arrayBuilder.add(otherJsonValue);
+        }
+        return arrayBuilder.build();
     }
 }

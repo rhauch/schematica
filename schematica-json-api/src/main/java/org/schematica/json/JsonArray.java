@@ -54,7 +54,19 @@ public interface JsonArray extends javax.json.JsonArray {
 
     byte[] getBinary(int index);
 
+    /**
+     * Returns an editor which allows to append values to the underlying array. When the editing operation is finished, the
+     * result is obtained via the {@link org.schematica.json.EditableJsonArray#unwrap()} method.
+     *
+     * @return a {@link org.schematica.json.EditableJsonArray} instance; never {@code null}
+     */
     EditableJsonArray edit();
 
+    /**
+     * Merges this array with the given array and returns the resulting array.
+     *
+     * @param other a {@link javax.json.JsonArray} with which to merge; must not be {@code null}
+     * @return a {@link org.schematica.json.JsonArray} instance representing the result of the merge; never {@code null}
+     */
     JsonArray merge(javax.json.JsonArray other);
 }
