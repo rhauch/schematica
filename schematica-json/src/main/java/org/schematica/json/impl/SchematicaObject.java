@@ -19,10 +19,11 @@ package org.schematica.json.impl;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Collection;
+import java.util.AbstractMap;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
+import javax.json.Json;
 import javax.json.JsonException;
 import javax.json.JsonNumber;
 import javax.json.JsonString;
@@ -30,12 +31,15 @@ import javax.json.JsonValue;
 import org.schematica.json.EditableJsonObject;
 import org.schematica.json.JsonArray;
 import org.schematica.json.JsonObject;
+import org.schematica.json.JsonObjectBuilder;
 import org.schematica.json.impl.util.Base64;
 
 /**
  * @author Horia Chiorean (hchiorea@redhat.com)
  */
-public class SchematicaObject implements JsonObject {
+public class SchematicaObject extends AbstractMap<String, JsonValue> implements JsonObject {
+    static final JsonObject EMPTY_INSTANCE = new SchematicaObject(Json.createObjectBuilder().build());
+
     private final javax.json.JsonObject defaultObject;
 
     protected SchematicaObject( javax.json.JsonObject defaultObject ) {
@@ -44,12 +48,14 @@ public class SchematicaObject implements JsonObject {
 
     @Override
     public JsonObject getJsonObject( String name ) {
-        return new SchematicaObject(defaultObject.getJsonObject(name));
+        javax.json.JsonObject jsonObject = defaultObject.getJsonObject(name);
+        return jsonObject == null ? EMPTY_INSTANCE : new SchematicaObject(jsonObject);
     }
 
     @Override
-    public long getLong( String name ) {
-        return getJsonNumber(name).longValue();
+    public Long getLong( String name ) {
+        JsonNumber jsonNumber = getJsonNumber(name);
+        return jsonNumber != null ? jsonNumber.longValue() : null;
     }
 
     @Override
@@ -59,8 +65,9 @@ public class SchematicaObject implements JsonObject {
     }
 
     @Override
-    public double getDouble( String name ) {
-        return getJsonNumber(name).doubleValue();
+    public Double getDouble( String name ) {
+        JsonNumber jsonNumber = getJsonNumber(name);
+        return jsonNumber != null ? jsonNumber.doubleValue() : null;
     }
 
     @Override
@@ -93,7 +100,8 @@ public class SchematicaObject implements JsonObject {
 
     @Override
     public Date getDate( String name ) {
-        return new Date(getLong(name));
+        Long ts = getLong(name);
+        return ts != null ? new Date(ts) : null;
     }
 
     @Override
@@ -105,7 +113,8 @@ public class SchematicaObject implements JsonObject {
     @Override
     public byte[] getBinary( String name ) {
         try {
-            return Base64.decode(getString(name));
+            String string = getString(name);
+            return string != null ? Base64.decode(string) : null;
         } catch (IOException e) {
             throw new JsonException("Cannot decode Base64 field " + name);
         }
@@ -113,7 +122,8 @@ public class SchematicaObject implements JsonObject {
 
     @Override
     public JsonArray getJsonArray( String name ) {
-        return new SchematicaArray(defaultObject.getJsonArray(name));
+        javax.json.JsonArray jsonArray = defaultObject.getJsonArray(name);
+        return jsonArray != null ? new SchematicaArray(jsonArray) : SchematicaArray.EMPTY_INSTANCE;
     }
 
     @Override
@@ -166,68 +176,7 @@ public class SchematicaObject implements JsonObject {
 
     @Override
     public ValueType getValueType() {
-        return defaultObject.getValueType();
-    }
-
-    @Override
-    public int size() {
-        return defaultObject.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return defaultObject.isEmpty();
-    }
-
-    @Override
-    public boolean containsKey( Object key ) {
-        return defaultObject.containsKey(key);
-    }
-
-    @Override
-    public boolean containsValue( Object value ) {
-        if (value instanceof Date) {
-            value = ((Date) value).getTime();
-        } else if (value instanceof byte[]) {
-            value = Base64.encodeBytes((byte[]) value);
-        }
-        return defaultObject.containsValue(value);
-    }
-
-    @Override
-    public JsonValue get( Object key ) {
-        return defaultObject.get(key);
-    }
-
-    @Override
-    public JsonValue put( String key,
-                          JsonValue value ) {
-        return defaultObject.put(key, value);
-    }
-
-    @Override
-    public JsonValue remove( Object key ) {
-        return defaultObject.remove(key);
-    }
-
-    @Override
-    public void putAll( Map<? extends String, ? extends JsonValue> m ) {
-        defaultObject.putAll(m);
-    }
-
-    @Override
-    public void clear() {
-        defaultObject.clear();
-    }
-
-    @Override
-    public Set<String> keySet() {
-        return defaultObject.keySet();
-    }
-
-    @Override
-    public Collection<JsonValue> values() {
-        return defaultObject.values();
+        return ValueType.OBJECT;
     }
 
     @Override
@@ -260,13 +209,68 @@ public class SchematicaObject implements JsonObject {
 
     @Override
     public EditableJsonObject edit() {
-        //TODO author=Horia Chiorean date=1/24/14 description=implement
-        return null;
+        return new SchematicaEditableObject(this);
     }
 
     @Override
     public JsonObject merge( javax.json.JsonObject other ) {
-        //TODO author=Horia Chiorean date=1/24/14 description=implement
-        return this;
+        javax.json.JsonObject mergeSource = other;
+        if (other instanceof SchematicaEditableObject && ((SchematicaEditableObject) other).jsonObject().equals(this)) {
+            mergeSource = ((SchematicaEditableObject) other).changesToJson();
+        }
+
+        JsonObjectBuilder mergeObjectBuilder = org.schematica.json.Json.createObjectBuilder();
+        //create a copy of the current object's data
+        for (Map.Entry<String, JsonValue> entry : defaultObject.entrySet()) {
+            mergeObjectBuilder.add(entry.getKey(), entry.getValue());
+        }
+
+        //merge with source
+        for (Map.Entry<String, JsonValue> entry : mergeSource.entrySet()) {
+            String fieldName = entry.getKey();
+            JsonValue fieldValue = entry.getValue();
+
+            JsonValue existingValue = defaultObject.get(fieldName);
+            if (existingValue == null) {
+                //there is no previous value, so just add it
+                mergeObjectBuilder.add(fieldName, fieldValue);
+            } else {
+                ValueType incomingValueType = fieldValue.getValueType();
+                if (incomingValueType.equals(ValueType.NULL)) {
+                    mergeObjectBuilder.addNull(fieldName);
+                    continue;
+                }
+                if (!existingValue.getValueType().equals(ValueType.NULL) && !existingValue.getValueType().equals(incomingValueType)) {
+                    throw new IllegalArgumentException("The value type for the '" + fieldName + "' field cannot be changed from" +
+                                                       "'" + existingValue + "' to '" + fieldValue + "'.");
+                }
+                switch (existingValue.getValueType()) {
+                    case ARRAY: {
+                        if (existingValue instanceof JsonArray && fieldValue instanceof javax.json.JsonArray) {
+                            mergeObjectBuilder.add(fieldName, ((JsonArray)existingValue).merge((javax.json.JsonArray)fieldValue));
+                        } else {
+                            //we don't know the type of array
+                            mergeObjectBuilder.add(fieldName, fieldValue);
+                        }
+                        break;
+                    }
+                    case OBJECT: {
+                        if (existingValue instanceof JsonObject && fieldValue instanceof javax.json.JsonObject) {
+                            mergeObjectBuilder.add(fieldName, ((JsonObject)existingValue).merge((javax.json.JsonObject)fieldValue));
+                        } else {
+                            //we don't know the type of object
+                            mergeObjectBuilder.add(fieldName, fieldValue);
+                        }
+                        break;
+                    }
+                    default: {
+                        //simple override/add the value
+                        mergeObjectBuilder.add(fieldName, fieldValue);
+                    }
+                }
+            }
+        }
+        return mergeObjectBuilder.build();
     }
+
 }

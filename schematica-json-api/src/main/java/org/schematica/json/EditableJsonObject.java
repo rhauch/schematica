@@ -19,7 +19,7 @@ package org.schematica.json;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-import javax.json.*;
+import javax.json.JsonValue;
 
 /**
  * @author Horia Chiorean (hchiorea@redhat.com)
@@ -188,4 +188,11 @@ public interface EditableJsonObject extends JsonObject {
      * @return This builder, to allow for chaining methods
      */
     EditableJsonObject add( String name, byte[] data );
+
+    /**
+     * Applies the changes recorded during the edit operation on the underlying object and returns the resulting object.
+     *
+     * @return a {@link JsonObject} which contains the updated/edited value; never {@code null}
+     */
+    JsonObject unwrap();
 }

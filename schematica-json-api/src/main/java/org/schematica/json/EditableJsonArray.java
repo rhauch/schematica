@@ -19,7 +19,7 @@ package org.schematica.json;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-import javax.json.*;
+import javax.json.JsonValue;
 
 /**
  * @author Horia Chiorean (hchiorea@redhat.com)
@@ -33,7 +33,7 @@ public interface EditableJsonArray extends JsonArray {
      * @return this instance
      * @throws NullPointerException if the specified value is null
      */
-    EditableJsonArray add(String value);
+    EditableJsonArray add( String value );
 
     /**
      * Adds a value to the array as a {@link javax.json.JsonNumber}.
@@ -41,10 +41,9 @@ public interface EditableJsonArray extends JsonArray {
      * @param value the number value
      * @return this instance
      * @throws NullPointerException if the specified value is null
-     *
      * @see javax.json.JsonNumber
      */
-    EditableJsonArray add(BigDecimal value);
+    EditableJsonArray add( BigDecimal value );
 
     /**
      * Adds a value to the array as a {@link javax.json.JsonNumber}.
@@ -52,30 +51,27 @@ public interface EditableJsonArray extends JsonArray {
      * @param value the number value
      * @return this instance
      * @throws NullPointerException if the specified value is null
-     *
      * @see javax.json.JsonNumber
      */
-    EditableJsonArray add(BigInteger value);
+    EditableJsonArray add( BigInteger value );
 
     /**
      * Adds a value to the array as a {@link javax.json.JsonNumber}.
      *
      * @param value the number value
      * @return this instance
-     *
      * @see javax.json.JsonNumber
      */
-    EditableJsonArray add(int value);
+    EditableJsonArray add( int value );
 
     /**
      * Adds a value to the array as a {@link javax.json.JsonNumber}.
      *
      * @param value the number value
      * @return this instance
-     *
      * @see javax.json.JsonNumber
      */
-    EditableJsonArray add(long value);
+    EditableJsonArray add( long value );
 
     /**
      * Adds a value to the array as a {@link javax.json.JsonNumber}.
@@ -83,11 +79,10 @@ public interface EditableJsonArray extends JsonArray {
      * @param value the number value
      * @return this instance
      * @throws NumberFormatException if the value is Not-a-Number(NaN) or
-     *      infinity
-     *
+     * infinity
      * @see javax.json.JsonNumber
      */
-    EditableJsonArray add(double value);
+    EditableJsonArray add( double value );
 
     /**
      * Adds a {@link JsonValue#TRUE}  or {@link JsonValue#FALSE} value to the
@@ -96,7 +91,7 @@ public interface EditableJsonArray extends JsonArray {
      * @param value the boolean value
      * @return this instance
      */
-    EditableJsonArray add(boolean value);
+    EditableJsonArray add( boolean value );
 
     /**
      * Adds a {@link JsonValue#NULL} value to the array.
@@ -112,7 +107,7 @@ public interface EditableJsonArray extends JsonArray {
      * @return this instance
      * @throws NullPointerException if the specified builder is null
      */
-    EditableJsonArray add( javax.json.JsonObjectBuilder builder);
+    EditableJsonArray add( javax.json.JsonObjectBuilder builder );
 
     /**
      * Adds a {@link javax.json.JsonArray} from an array builder to the array.
@@ -121,9 +116,30 @@ public interface EditableJsonArray extends JsonArray {
      * @return this array builder
      * @throws NullPointerException if the specified builder is null
      */
-    EditableJsonArray add(javax.json.JsonArrayBuilder builder);
+    EditableJsonArray add( javax.json.JsonArrayBuilder builder );
 
+    /**
+     * Adds a value to the array as a {@link java.util.Date}.
+     *
+     * @param value the date value
+     * @return this instance
+     * @throws NullPointerException if the specified value is null
+     */
     EditableJsonArray add( Date value );
 
+    /**
+     * Adds a value to the array as a {@code byte[]}.
+     *
+     * @param value the byte array value
+     * @return this instance
+     * @throws NullPointerException if the specified value is null
+     */
     EditableJsonArray add( byte[] value );
+
+    /**
+     * Applies the changes recorded during the edit operation on the underlying array and returns the resulting array.
+     *
+     * @return a {@link JsonArray} which contains the updated/edited values; never {@code null}
+     */
+    JsonArray unwrap();
 }
